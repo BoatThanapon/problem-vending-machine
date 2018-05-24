@@ -30,6 +30,10 @@ vendingMachine.prototype = {
         this.$twoCoin = $("#two-coin")
         this.$fiveCoin = $("#five-coin")
         this.$tenCoin = $("#ten-coin")
+        this.$twentyBangnotes = $("#twenty-banknotes")
+        this.$fiftyBanknotes = $("#fifty-banknotes")
+        this.$onehundredBanknotes = $("#onehundred-banknotes")
+
         this.$btnRecieveCoin = $('#btn-recieve-coin')
         this.$btnRecieveProduct = $('#btn-recieve-product')
         this.$btnCancel =  $('#btn-cancel')
@@ -44,16 +48,28 @@ vendingMachine.prototype = {
         const self = this
 
         this.$oneCoin.on('click', function () {
-            self.addCoin(1, self);
+            self.addMoney(1, self);
         })
         this.$twoCoin.on('click', function () {
-            self.addCoin(2, self);
+            self.addMoney(2, self);
         })
         this.$fiveCoin.on('click', function () {
-            self.addCoin(5, self);
+            self.addMoney(5, self);
         })
         this.$tenCoin.on('click', function () {
-            self.addCoin(10, self);
+            self.addMoney(10, self);
+        })
+
+        this.$twentyBangnotes.on('click', function () {
+            self.addMoney(20, self);
+        })
+
+        this.$fiftyBanknotes.on('click', function () {
+            self.addMoney(50, self);
+        })
+
+        this.$onehundredBanknotes.on('click', function () {
+            self.addMoney(100, self);
         })
 
         this.$inpCoin.on('change', function () {
@@ -94,11 +110,11 @@ vendingMachine.prototype = {
                 (value.in_stock == true) ?
                 this.$productMenu.prepend('<div class="col-md-6 card border-secondary">' +
                     '<img src="' + value.image + '" />' +
-                    '<button type="button" class="btn btn-danger btn-lg btn-block" id="product-' + value.id + '">' + value.name + ' ' + value.price + ' Coins</button><br>' +
+                    '<button type="button" class="btn btn-danger btn-lg btn-block" id="product-' + value.id + '">' + value.name + ' ' + value.price + ' BATH</button><br>' +
                     '</div>'
                 ): this.$productMenu.prepend('<div class="col-md-6 card border-secondary">' +
                     '<img src="' + value.image + '" />' +
-                    '<button type="button" class="btn btn-secondary btn-lg btn-block" id="product-' + value.id + '" disabled>' + value.name + ' ' + value.price + ' Coins</button><br>' +
+                    '<button type="button" class="btn btn-secondary btn-lg btn-block" id="product-' + value.id + '" disabled>' + value.name + ' ' + value.price + ' BATH</button><br>' +
                     '</div>'
                 )
 
@@ -119,7 +135,19 @@ vendingMachine.prototype = {
     helperReturn: function(result, product){
         if(result > 0){
             while(result > 0){
-                if( result >= 10){
+                if( result >= 100){
+                    result = result - 100
+                    this._coinReturn.push({coin:100})
+                }
+                else if(result >= 50){
+                    result = result - 50
+                    this._coinReturn.push({coin:50})
+                }
+                else if(result >= 20){
+                    result = result - 20
+                    this._coinReturn.push({coin:20})
+                }
+                else if(result >= 10){
                     result = result - 10
                     this._coinReturn.push({coin:10})
                 }
@@ -194,9 +222,10 @@ vendingMachine.prototype = {
         var result = currentCoin - productPrice
         self.helperReturn(result,findProduct[0])     
     },
-    addCoin: function (coin, self) {
+    addMoney: function (money, self) {
+        console.log(money);
         var currentCoin = parseInt(self.$inpCoin.val())
-        var results = currentCoin + coin
+        var results = currentCoin + money
 
         self.$inpCoin.val(parseInt(results))
         self.$inpCoin.trigger('change')
